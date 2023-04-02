@@ -10,7 +10,7 @@ using System.Reflection.Metadata.Ecma335;
 
 namespace MagicVilla_VillaAPI.Controllers
 {
-    [Route("api/VillaAPI")]
+    [Route("api/villaAPI")]
     [ApiController]
     public class VillaAPIController : ControllerBase
     {
