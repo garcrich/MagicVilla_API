@@ -26,11 +26,16 @@ namespace MagicVilla_Web.Services
 				Url = villaUrl + "/api/villaNumberAPI"
 			});
 		}
-
 		public Task<T> CreateAsync<T>(VillaNumberCreateDTO dto)
 		{
-			throw new NotImplementedException();
+			return SendAsync<T>(new APIRequest()
+			{
+				ApiType = SD.ApiType.POST,
+				Data = dto,
+				Url = villaUrl + "/api/villaNumberAPI",
+			});
 		}
+
 
 		public Task<T> DeleteAsync<T>(int id)
 		{
