@@ -63,20 +63,14 @@ namespace MagicVilla_Web.Services
 				Url = villaUrl + "/api/villaNumberAPI/" + id
 			});
 		}
-
-		public Task<T> UpdateAsync<T>(VillaUpdateDTO dto)
+		public Task<T> UpdateAsync<T>(VillaNumberUpdateDTO dto)
 		{
 			return SendAsync<T>(new APIRequest()
 			{
 				ApiType = SD.ApiType.PUT,
 				Data = dto,
-				Url = villaUrl + "/api/villaNumberAPI/" + dto.Id
+				Url = villaUrl + "/api/villaNumberAPI/" + dto.VillaNo
 			});
-		}
-
-		public Task<T> UpdateAsync<T>(VillaNumberUpdateDTO dto)
-		{
-			throw new NotImplementedException();
 		}
 	}
 }
