@@ -12,8 +12,10 @@ using System.Reflection.Metadata.Ecma335;
 
 namespace MagicVilla_VillaAPI.Controllers
 {
-    [Route("api/VillaNumberAPI")]
+    [Route("api/v{version:apiVersion}/VillaNumberAPI")]
     [ApiController]
+    [ApiVersion("1.0")]
+    [ApiVersion("2.0")]
     public class VillaNumberAPIController : ControllerBase
     {
         protected APIResponse _response;
@@ -30,6 +32,7 @@ namespace MagicVilla_VillaAPI.Controllers
             _dbVilla = dbVilla;
         }
 
+        [MapToApiVersion("1.0")]
         [HttpGet]
         public async Task<ActionResult<APIResponse>> GetVillaNumbers()
         {
@@ -48,6 +51,14 @@ namespace MagicVilla_VillaAPI.Controllers
 
             return _response;
         }
+
+        [MapToApiVersion("2.0")]
+        [HttpGet]
+        public IEnumerable<string> Get()
+        {
+            return new string[] { "value1", "value2" };
+        }
+
         [HttpGet("{id:int}", Name = "GetVillaNumber")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]

@@ -13,9 +13,10 @@ using System.Net;
 namespace MagicVilla_VillaAPI.Controllers
 {
 	//[Route("api/[controller]")]
-	[Route("api/VillaAPI")]
-	[ApiController]
-	public class VillaAPIController : ControllerBase
+	[Route("api/v{version:apiVersion}VillaAPI")]
+    [ApiController]
+    [ApiVersion("1.0")]
+    public class VillaAPIController : ControllerBase
 	{
 		protected APIResponse _response;
 		private readonly IVillaRepository _dbVilla;
@@ -29,7 +30,8 @@ namespace MagicVilla_VillaAPI.Controllers
 
 
 		[HttpGet]
-		[Authorize]
+		[ProducesResponseType(StatusCodes.Status401Unauthorized)]
+		[ProducesResponseType(StatusCodes.Status403Forbidden)]
 		[ProducesResponseType(StatusCodes.Status200OK)]
 		public async Task<ActionResult<APIResponse>> GetVillas()
 		{
@@ -56,8 +58,9 @@ namespace MagicVilla_VillaAPI.Controllers
 		[HttpGet("{id:int}", Name = "GetVilla")]
 		[ProducesResponseType(StatusCodes.Status200OK)]
 		[ProducesResponseType(StatusCodes.Status400BadRequest)]
+		[ProducesResponseType(StatusCodes.Status401Unauthorized)]
+		[ProducesResponseType(StatusCodes.Status403Forbidden)]
 		[ProducesResponseType(StatusCodes.Status404NotFound)]
-		//[ProducesResponseType(200, Type =typeof(VillaDTO))]
 		public async Task<ActionResult<APIResponse>> GetVilla(int id)
 		{
 			try
@@ -94,10 +97,6 @@ namespace MagicVilla_VillaAPI.Controllers
 		{
 			try
 			{
-				//if (!ModelState.IsValid)
-				//{
-				//    return BadRequest(ModelState);
-				//}
 				if (await _dbVilla.GetAsync(u => u.Name.ToLower() == createDTO.Name.ToLower()) != null)
 				{
 					ModelState.AddModelError("ErrorMessages", "Villa already Exists!");
@@ -108,22 +107,8 @@ namespace MagicVilla_VillaAPI.Controllers
 				{
 					return BadRequest(createDTO);
 				}
-				//if (villaDTO.Id > 0)
-				//{
-				//    return StatusCode(StatusCodes.Status500InternalServerError);
-				//}
 				Villa villa = _mapper.Map<Villa>(createDTO);
 
-				//Villa model = new()
-				//{
-				//    Amenity = createDTO.Amenity,
-				//    Details = createDTO.Details,
-				//    ImageUrl = createDTO.ImageUrl,
-				//    Name = createDTO.Name,
-				//    Occupancy = createDTO.Occupancy,
-				//    Rate = createDTO.Rate,
-				//    Sqft = createDTO.Sqft
-				//};
 				await _dbVilla.CreateAsync(villa);
 				_response.Result = _mapper.Map<VillaDTO>(villa);
 				_response.StatusCode = HttpStatusCode.Created;
@@ -139,6 +124,8 @@ namespace MagicVilla_VillaAPI.Controllers
 		}
 
 		[ProducesResponseType(StatusCodes.Status204NoContent)]
+		[ProducesResponseType(StatusCodes.Status403Forbidden)]
+		[ProducesResponseType(StatusCodes.Status401Unauthorized)]
 		[ProducesResponseType(StatusCodes.Status404NotFound)]
 		[ProducesResponseType(StatusCodes.Status400BadRequest)]
 		[HttpDelete("{id:int}", Name = "DeleteVilla")]
